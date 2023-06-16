@@ -8,8 +8,8 @@
     <ProjectGuid>{3AFEB579-CF5F-416C-B684-6AACAD3DA218}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LiquidShaderPack</RootNamespace>
-    <AssemblyName>LiquidShaderPack</AssemblyName>
+    <RootNamespace>CustomShaderPack</RootNamespace>
+    <AssemblyName>CustomShaderPack</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

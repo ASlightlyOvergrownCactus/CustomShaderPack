@@ -13,9 +13,9 @@ using System.Reflection;
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
-namespace LiquidShaderPack;
+namespace CustomShaderPack;
 
-[BepInPlugin("liquid.shaders", "CustomLiquidShaders", "0.1")]
+[BepInPlugin("custom.shaders", "CustomShaderPack", "0.1")]
 sealed class Plugin : BaseUnityPlugin
 {
     public static readonly object mossSprite = new object();
@@ -86,7 +86,6 @@ sealed class Plugin : BaseUnityPlugin
             shader = self.room.game.rainWorld.Shaders["MossWater"]
         };
         (sLeaser.sprites[index] as TriangleMesh).vertices = (sLeaser.sprites[0] as WaterTriangleMesh).vertices;
-
 
         self.AddToContainer(sLeaser, rCam, null);
 
