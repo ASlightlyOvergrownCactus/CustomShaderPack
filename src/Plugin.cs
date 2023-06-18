@@ -71,13 +71,18 @@ sealed class Plugin : BaseUnityPlugin
 
         int index = sLeaser.sprites.Length;
         Array.Resize(ref sLeaser.sprites, sLeaser.sprites.Length + 1);
-
-        TriangleMesh.Triangle[] tris = new TriangleMesh.Triangle[self.pointsToRender * 2];
+        Debug.Log(self.pointsToRender);
+        int multiplyFactor = 8;
+        TriangleMesh.Triangle[] tris = new TriangleMesh.Triangle[self.pointsToRender * 2  * multiplyFactor];
         for (int i = 0; i < self.pointsToRender; i++)
         {
-            int num = i * 2;
-            tris[num] = new TriangleMesh.Triangle(num, num + 1, num + 2);
-            tris[num + 1] = new TriangleMesh.Triangle(num + 1, num + 2, num + 3);
+            int num = i * 2 * multiplyFactor;
+
+            for (int j = 0; j < multiplyFactor; j++)
+            {
+                tris[num + j * 2] = new TriangleMesh.Triangle(num + j, num + 1 + j, num + multiplyFactor + j);
+                tris[num + j * 2 + 1] = new TriangleMesh.Triangle(num + 1 + j, num + multiplyFactor + j, num + 1 + multiplyFactor + j);
+            } 
         }
 
         sLeaser.sprites[index] = new TriangleMesh("Futile_White", tris, true)
@@ -85,7 +90,6 @@ sealed class Plugin : BaseUnityPlugin
             data = mossSprite,
             shader = self.room.game.rainWorld.Shaders["MossWater"]
         };
-        (sLeaser.sprites[index] as TriangleMesh).vertices = (sLeaser.sprites[0] as WaterTriangleMesh).vertices;
 
         self.AddToContainer(sLeaser, rCam, null);
 
@@ -95,6 +99,8 @@ sealed class Plugin : BaseUnityPlugin
     {
         orig(self, sLeaser, rCam, timeStacker, camPos);
         int index = -1;
+        Vector2 waterFront = Vector2.zero;
+        Vector2 waterBack = Vector2.zero;
 
         foreach (var sprite in sLeaser.sprites)
         {
@@ -106,10 +112,20 @@ sealed class Plugin : BaseUnityPlugin
         int offset = self.PreviousSurfacePoint(camPos.x - 30f) * 2;
         for (int i = 0; i < (sLeaser.sprites[index] as TriangleMesh).vertices.Length; i++)
         {
-            (sLeaser.sprites[index] as TriangleMesh).UVvertices[i] = new Vector2((i + offset) / 2, i % 2);
+            //(sLeaser.sprites[index] as TriangleMesh).UVvertices[i] = new Vector2((i + offset) / 2, i % 2);
+            (sLeaser.sprites[index] as TriangleMesh).UVvertices[i] = new Vector2(i / 8, i % 8 / 7f);
         }
+        
+        for (int i = 0; i < (sLeaser.sprites[index] as TriangleMesh).vertices.Length; i++)
+        {
+                waterFront = (sLeaser.sprites[0] as WaterTriangleMesh).vertices[(i / 8) * 2];
+                waterBack = (sLeaser.sprites[0] as WaterTriangleMesh).vertices[(i / 8) * 2 + 1];
 
+            (sLeaser.sprites[index] as TriangleMesh).MoveVertice(i, Vector2.Lerp(waterFront, waterBack, i % 8 / 7f));
+        }
+        
         (sLeaser.sprites[index] as TriangleMesh).Refresh();
+
     }
 
 
